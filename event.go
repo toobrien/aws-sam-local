@@ -23,29 +23,28 @@ type Event struct {
 
 // RequestContext represents the context object that gets passed to an AWS Lambda function
 type RequestContext struct {
-	ResourceID   string          `json:"resourceId,omitempty"`
-	APIID        string          `json:"apiId,omitempty"`
-	ResourcePath string          `json:"resourcePath,omitempty"`
-	HTTPMethod   string          `json:"httpMethod,omitempty"`
-	RequestID    string          `json:"requestId,omitempty"`
-	AccountsID   string          `json:"accountId,omitempty"`
-	Stage        string          `json:"stage,omitempty"`
-	Identity     ContextIdentity `json:"identity,omitempty"`
+	ResourceID   string          `json:"resourceId"`
+	APIID        string          `json:"apiId"`
+	ResourcePath string          `json:"resourcePath"`
+	HTTPMethod   string          `json:"httpMethod"`
+	RequestID    string          `json:"requestId"`
+	AccountsID   string          `json:"accountId"`
+	Identity     ContextIdentity `json:"identity"`
 }
 
 // ContextIdentity represents the identity section of the context object that gets passed to an AWS Lambda function
 type ContextIdentity struct {
-	APIKey                        string `json:"apiKey,omitempty"`
-	UserARN                       string `json:"userArn,omitempty"`
-	CognitoAuthenticationType     string `json:"cognitoAuthenticationType,omitempty"`
-	Caller                        string `json:"caller,omitempty"`
-	UserAgent                     string `json:"userAgent,omitempty"`
-	User                          string `json:"user,omitempty"`
-	CognitoIdentityPoolID         string `json:"cognitoIdentityPoolId,omitempty"`
-	CognitoIdentityID             string `json:"cognitoIdentityId,omitempty"`
-	CognitoAuthenticationProvider string `json:"cognitoAuthenticationProvider,omitempty"`
-	SourceIP                      string `json:"sourceIp,omitempty"`
-	AccountID                     string `json:"accountId,omitempty"`
+	APIKey                        string `json:"apiKey"`
+	UserARN                       string `json:"userArn"`
+	CognitoAuthenticationType     string `json:"cognitoAuthenticationType"`
+	Caller                        string `json:"caller"`
+	UserAgent                     string `json:"userAgent"`
+	User                          string `json:"user"`
+	CognitoIdentityPoolID         string `json:"cognitoIdentityPoolId"`
+	CognitoIdentityID             string `json:"cognitoIdentityId"`
+	CognitoAuthenticationProvider string `json:"cognitoAuthenticationProvider"`
+	SourceIP                      string `json:"sourceIp"`
+	AccountID                     string `json:"accountId"`
 }
 
 // NewEvent initalises and populates a new ApiEvent with
@@ -71,10 +70,10 @@ func NewEvent(req *http.Request) (*Event, error) {
 		}
 	}
 
-	pathParams := mux.Vars(req)
-	if len(pathParams) == 0 {
-		pathParams = nil
-	}
+        pathParams := mux.Vars(req)
+        if len(pathParams) == 0 {
+                pathParams = make(map[string]string)
+        }
 
 	event := &Event{
 		HTTPMethod:        req.Method,
@@ -88,8 +87,6 @@ func NewEvent(req *http.Request) (*Event, error) {
 
 	event.RequestContext.Identity.SourceIP = req.RemoteAddr
 	event.RequestContext.ResourcePath = req.URL.Path
-	event.RequestContext.HTTPMethod = req.Method
-	event.RequestContext.Stage = "prod"
 
 	return event, nil
 
